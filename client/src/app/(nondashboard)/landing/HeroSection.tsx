@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 const HeroSection = () => {
   return (
-    <div className="pt-[72px]">
+    <div className="h-screen relative">
     <Image
         src="/landing-splash.jpg"   
         alt="Rentiful Rental Platform Hero Section"

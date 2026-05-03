@@ -1,10 +1,13 @@
 import React from 'react'
 import HeroSection from './HeroSection'
+import { Feature } from 'framer-motion'
+import FeaturesSection from './FeaturesSection'
 
 const Landing = () => {
   return (
     <div>
       <HeroSection/>
+      <FeaturesSection/>
     </div>
   )
 }
