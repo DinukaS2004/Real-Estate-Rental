@@ -1,25 +1,16 @@
 {
   "compilerOptions": {
-    "rootDir": "./src",
+    "target": "ES2020",
+    "module": "commonjs",
+    "lib": ["ES2020"],
     "outDir": "./dist",
-
-    "module": "nodenext",
-    "target": "esnext",
-    "types": ["node"],
-
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
-
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-
+    "rootDir": "./src",
     "strict": true,
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
-    "moduleDetection": "force",
-    "skipLibCheck": true
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
