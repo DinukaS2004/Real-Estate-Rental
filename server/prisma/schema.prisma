@@ -1,0 +1,181 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ────────────────────────────────────────────────
+
+enum UserRole {
+  TENANT
+  MANAGER
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  DENIED
+  WITHDRAWN
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  OVERDUE
+}
+
+enum PropertyType {
+  APARTMENT
+  HOUSE
+  CONDO
+  TOWNHOUSE
+  STUDIO
+}
+
+enum AmenityType {
+  WIFI
+  PARKING
+  GYM
+  POOL
+  LAUNDRY
+  PET_FRIENDLY
+  AIR_CONDITIONING
+  DISHWASHER
+  BALCONY
+  STORAGE
+}
+
+// ─── Models ───────────────────────────────────────────────
+
+model User {
+  id          String   @id @default(uuid())
+  cognitoId   String   @unique
+  email       String   @unique
+  name        String
+  phoneNumber String?
+  role        UserRole
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant  Tenant?
+  manager Manager?
+}
+
+model Tenant {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  favorites    Property[]    @relation("TenantFavorites")
+  applications Application[]
+  leases       Lease[]
+}
+
+model Manager {
+  id          String  @id @default(uuid())
+  userId      String  @unique
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyName String?
+  bio         String?
+
+  properties Property[]
+}
+
+model Location {
+  id         String  @id @default(uuid())
+  address    String
+  city       String
+  state      String
+  country    String
+  postalCode String
+  latitude   Float?
+  longitude  Float?
+
+  properties Property[]
+}
+
+model Property {
+  id               String       @id @default(uuid())
+  name             String
+  description      String
+  pricePerMonth    Float
+  securityDeposit  Float
+  applicationFee   Float        @default(0)
+  photoUrls        String[]
+  isPetsAllowed    Boolean      @default(false)
+  isParkingIncluded Boolean     @default(false)
+  beds             Int
+  baths            Float
+  squareFeet       Int?
+  propertyType     PropertyType
+  averageRating    Float?       @default(0)
+  numberOfReviews  Int          @default(0)
+  isAvailable      Boolean      @default(true)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  managerId  String
+  manager    Manager  @relation(fields: [managerId], references: [id])
+  locationId String
+  location   Location @relation(fields: [locationId], references: [id])
+
+  amenities    Amenity[]
+  applications Application[]
+  leases       Lease[]
+  reviews      Review[]
+  favoritedBy  Tenant[]      @relation("TenantFavorites")
+}
+
+model Amenity {
+  id         String      @id @default(uuid())
+  type       AmenityType
+  propertyId String
+  property   Property    @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+}
+
+model Application {
+  id              String            @id @default(uuid())
+  applicationDate DateTime          @default(now())
+  status          ApplicationStatus @default(PENDING)
+  message         String?
+  moveInDate      DateTime?
+  name            String
+  email           String
+  phoneNumber     String
+
+  tenantId   String
+  tenant     Tenant   @relation(fields: [tenantId], references: [id])
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+  lease      Lease?
+}
+
+model Lease {
+  id              String        @id @default(uuid())
+  startDate       DateTime
+  endDate         DateTime
+  monthlyRent     Float
+  securityDeposit Float
+  paymentStatus   PaymentStatus @default(PENDING)
+  createdAt       DateTime      @default(now())
+
+  tenantId      String
+  tenant        Tenant      @relation(fields: [tenantId], references: [id])
+  propertyId    String
+  property      Property    @relation(fields: [propertyId], references: [id])
+  applicationId String      @unique
+  application   Application @relation(fields: [applicationId], references: [id])
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  rating     Int
+  comment    String?
+  createdAt  DateTime @default(now())
+
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  tenantId   String
+}
