@@ -71,6 +71,7 @@ model Tenant {
   favorites    Property[]    @relation("TenantFavorites")
   applications Application[]
   leases       Lease[]
+  reviews      Review[]
 }
 
 model Manager {
@@ -178,4 +179,5 @@ model Review {
   propertyId String
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   tenantId   String
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }

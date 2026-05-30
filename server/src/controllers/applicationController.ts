@@ -10,7 +10,7 @@ export const submitApplication = async (
 ) => {
     try {
         const tenant = await prisma.tenant.findFirst({
-            where: { user: { cognitoId: req.user!.cognitoId } },
+            where: { user: { asgardeoId: req.user!.asgardeoId } },
         });
 
         if (!tenant) return next(createError("Tenant profile not found", 404));
@@ -57,11 +57,11 @@ export const getApplications = async (
     next: NextFunction
 ) => {
     try {
-        const { role, cognitoId } = req.user!;
+        const { role, asgardeoId } = req.user!;
 
         if (role === "TENANT") {
             const tenant = await prisma.tenant.findFirst({
-                where: { user: { cognitoId } },
+                where: { user: { asgardeoId } },
             });
             if (!tenant) return next(createError("Tenant not found", 404));
 
@@ -75,7 +75,7 @@ export const getApplications = async (
 
         if (role === "MANAGER") {
             const manager = await prisma.manager.findFirst({
-                where: { user: { cognitoId } },
+                where: { user: { asgardeoId } },
             });
             if (!manager) return next(createError("Manager not found", 404));
 
@@ -113,7 +113,7 @@ export const updateApplicationStatus = async (
         if (!application) return next(createError("Application not found", 404));
 
         // Only the property's manager can update status
-        if (application.property.manager.user.cognitoId !== req.user!.cognitoId) {
+        if (application.property.manager.user.asgardeoId !== req.user!.asgardeoId) {
             return next(createError("Not authorized", 403));
         }
 
@@ -162,7 +162,7 @@ export const withdrawApplication = async (
 ) => {
     try {
         const tenant = await prisma.tenant.findFirst({
-            where: { user: { cognitoId: req.user!.cognitoId } },
+            where: { user: { asgardeoId: req.user!.asgardeoId } },
         });
 
         const application = await prisma.application.findUnique({

@@ -4,7 +4,7 @@ import pg from "pg";
 import dotenv from "dotenv";
 import path from "path";
 
-dotenv.config({ path: path.join(__dirname, ".env") });
+dotenv.config({ path: path.join(__dirname, "../.env") });
 
 const pool = new pg.Pool({
     connectionString: process.env.DATABASE_URL,
@@ -14,6 +14,20 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter } as any);
 
 async function main() {
+    console.log("Cleaning existing data...");
+
+    // Delete in reverse-dependency order to satisfy foreign-key constraints
+    await prisma.review.deleteMany();
+    await prisma.payment?.deleteMany?.();   // safe-call in case model doesn't exist yet
+    await prisma.lease.deleteMany();
+    await prisma.application.deleteMany();
+    await prisma.amenity.deleteMany();
+    await prisma.property.deleteMany();
+    await prisma.location.deleteMany();
+    await prisma.tenant.deleteMany();
+    await prisma.manager.deleteMany();
+    await prisma.user.deleteMany();
+
     console.log("Seeding database...");
 
     // ── Locations ──────────────────────────────────────────
