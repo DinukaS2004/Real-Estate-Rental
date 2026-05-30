@@ -44,7 +44,7 @@ async function main() {
     // ── Manager user ───────────────────────────────────────
     const managerUser = await prisma.user.create({
         data: {
-            cognitoId: "mock-cognito-manager-001",
+            asgardeoId: "mock-asgardeo-manager-001",
             email: "manager@test.com",
             name: "Sarah Johnson",
             phoneNumber: "+1-512-555-0100",
@@ -62,7 +62,7 @@ async function main() {
     // ── Tenant user ────────────────────────────────────────
     const tenantUser = await prisma.user.create({
         data: {
-            cognitoId: "mock-cognito-tenant-001",
+            asgardeoId: "mock-asgardeo-tenant-001",
             email: "tenant@test.com",
             name: "Alex Rivera",
             phoneNumber: "+1-512-555-0200",

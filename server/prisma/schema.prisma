@@ -51,7 +51,7 @@ enum AmenityType {
 
 model User {
   id          String   @id @default(uuid())
-  cognitoId   String   @unique
+  asgardeoId  String   @unique
   email       String   @unique
   name        String
   phoneNumber String?
