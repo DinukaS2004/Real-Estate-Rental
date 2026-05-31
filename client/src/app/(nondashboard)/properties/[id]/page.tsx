@@ -1,7 +1,8 @@
-export default function PropertyDetailPage({
-                                               params,
-                                           }: {
-    params: { id: string };
+export default async function PropertyDetailPage({
+    params,
+}: {
+    params: Promise<{ id: string }>;
 }) {
-    return <div>Property {params.id} — coming soon</div>;
+    const { id } = await params;
+    return <div>Property {id} — coming soon</div>;
 }
